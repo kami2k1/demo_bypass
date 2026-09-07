@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Lỗi hệ thống — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="shell error-page">
+  <p class="error-code">500</p>
+  <h1>Có lỗi phía server</h1>
+  <p class="lead">Yêu cầu không hoàn tất được. Hãy thử lại sau ít phút.</p>
+  <p><a class="btn btn-primary" href="{{ url_for('site.home') }}">Về trang chủ</a></p>
+</section>
+{% endblock %}

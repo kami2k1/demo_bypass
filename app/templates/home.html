@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import lesson_card, tag_list %}
+
+{% block title %}{{ site_name }} — {{ site_tagline }}{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Ngôn ngữ của hạ tầng hiện đại</p>
+      <h1>Go nhanh ở ba nơi quan trọng nhất</h1>
+      <p class="lead">
+        Nhanh khi biên dịch, nhanh khi chạy, và nhanh khi cả một đội ngũ phải đọc lại
+        code sau sáu tháng. {{ curriculum.lesson_count }} bài học dưới đây đi từ
+        <code>hello world</code> tới scheduler, GC và vận hành production.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="{{ url_for('learn.curriculum') }}">Xem lộ trình</a>
+        <a class="btn btn-ghost" href="{{ url_for('learn.lesson_detail', slug='tai-sao-chon-go') }}">Bắt đầu bài 001</a>
+      </div>
+    </div>
+
+    <div class="hero-code">
+      <div class="hero-code-bar"><span></span><span></span><span></span>main.go</div>
+      <pre class="code" data-lang="go"><code>package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	http.HandleFunc("/", hello)
+	http.ListenAndServe(":8080", nil)
+}
+
+func hello(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Go xin chào!")
+}</code></pre>
+      <p class="hero-code-note">Một HTTP server dùng được ở production, không cần thư viện ngoài.</p>
+    </div>
+  </div>
+</section>
+
+<section class="shell stats">
+  <div class="stat"><strong>{{ curriculum.lesson_count }}</strong><span>bài học</span></div>
+  <div class="stat"><strong>{{ curriculum.chapter_count }}</strong><span>chương</span></div>
+  <div class="stat"><strong>{{ curriculum.sample_count }}</strong><span>ví dụ mã</span></div>
+  <div class="stat"><strong>{{ curriculum.code_line_count }}</strong><span>dòng code mẫu</span></div>
+  <div class="stat"><strong>{{ curriculum.demos | length }}</strong><span>demo tương tác</span></div>
+</section>
+
+<section class="shell section">
+  <header class="section-head">
+    <h2>Lộ trình theo chương</h2>
+    <a class="link-more" href="{{ url_for('learn.curriculum') }}">Toàn bộ lộ trình →</a>
+  </header>
+  <div class="grid grid-3">
+    {% for chapter in chapters %}
+      <article class="card chapter-card">
+        <span class="badge badge-num">Chương {{ loop.index }}</span>
+        <h3><a href="{{ url_for('learn.chapter_detail', slug=chapter.slug) }}">{{ chapter.title }}</a></h3>
+        <p>{{ chapter.summary | inline_code }}</p>
+        <footer><span class="meta">{{ chapter.lessons | length }} bài</span></footer>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head">
+    <h2>Bắt đầu từ đây</h2>
+    <p class="section-sub">Bài mở đầu của mỗi chương đầu tiên.</p>
+  </header>
+  <div class="grid grid-3">
+    {% for lesson in featured %}
+      {{ lesson_card(lesson) }}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head">
+    <h2>Demo tương tác</h2>
+    <a class="link-more" href="{{ url_for('site.demo_index') }}">Tất cả demo →</a>
+  </header>
+  <div class="grid grid-2">
+    {% for demo in demos %}
+      <article class="card demo-card">
+        <h3><a href="{{ url_for('site.demo_detail', slug=demo.slug) }}">{{ demo.title }}</a></h3>
+        <p>{{ demo.summary }}</p>
+        <footer><span class="meta">{{ demo.concept }}</span></footer>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head">
+    <h2>Thẻ phổ biến</h2>
+    <a class="link-more" href="{{ url_for('learn.tag_index') }}">Tất cả thẻ →</a>
+  </header>
+  {{ tag_list(top_tags | map(attribute=0) | list) }}
+</section>
+{% endblock %}

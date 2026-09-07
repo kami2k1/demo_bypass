@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "golang-tour"
+version = "1.0.0"
+description = "Site Flask giới thiệu ngôn ngữ Go với hơn 100 bài học có ví dụ"
+requires-python = ">=3.11"
+dependencies = ["Flask>=3.0"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+filterwarnings = ["error"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+# `ruff format` đã lo độ dài dòng của code; các chuỗi văn xuôi trong module nội dung
+# không nên bị cắt máy móc nên E501 được tắt.
+ignore = ["E501"]

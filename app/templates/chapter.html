@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import lesson_card, breadcrumb %}
+
+{% block title %}{{ chapter.title }} — {{ site_name }}{% endblock %}
+{% block description %}{{ chapter.summary }}{% endblock %}
+
+{% block breadcrumb %}
+{{ breadcrumb([('Lộ trình', url_for('learn.curriculum')), (chapter.title, None)]) }}
+{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <span class="badge badge-num">Chương {{ number }}</span>
+  <h1>{{ chapter.title }}</h1>
+  <p class="lead">{{ chapter.summary | inline_code }}</p>
+  <p class="meta">{{ chapter.lessons | length }} bài · bài {{ '%03d' % chapter.lessons[0].number }}–{{ '%03d' % chapter.lessons[-1].number }}</p>
+</section>
+
+<section class="shell section">
+  <div class="grid grid-2">
+    {% for lesson in chapter.lessons %}
+      {{ lesson_card(lesson, show_chapter=False) }}
+    {% endfor %}
+  </div>
+</section>
+
+<nav class="shell pager" aria-label="Chương trước sau">
+  {% if previous %}
+    <a class="pager-prev" href="{{ url_for('learn.chapter_detail', slug=previous.slug) }}">
+      <small>Chương trước</small><strong>{{ previous.title }}</strong>
+    </a>
+  {% else %}<span></span>{% endif %}
+  {% if following %}
+    <a class="pager-next" href="{{ url_for('learn.chapter_detail', slug=following.slug) }}">
+      <small>Chương sau</small><strong>{{ following.title }}</strong>
+    </a>
+  {% endif %}
+</nav>
+{% endblock %}

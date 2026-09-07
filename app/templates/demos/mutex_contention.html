@@ -1,0 +1,43 @@
+<div class="demo demo-mutex">
+  <div class="mutex-compare">
+    <div class="mutex-panel">
+      <h4>Một mutex cho toàn bộ map</h4>
+      <div class="mutex-lock mutex-lock-held">
+        <span>sync.Mutex</span>
+        <em>đang bị giữ bởi G1</em>
+      </div>
+      <div class="mutex-waiters">
+        {% for g in range(2, 6) %}
+          <span class="g g-waiting" style="animation-delay: {{ (g - 2) * 0.3 }}s">G{{ g }}</span>
+        {% endfor %}
+      </div>
+      <p class="mutex-verdict mutex-bad">3 goroutine xếp hàng — thông lượng bị chặn ở một khoá</p>
+    </div>
+
+    <div class="mutex-panel">
+      <h4>Sharding: 4 mutex độc lập</h4>
+      <div class="mutex-shards">
+        {% for shard in range(4) %}
+          <div class="shard">
+            <span class="shard-name">shard {{ shard }}</span>
+            <span class="mutex-lock mutex-lock-free">mutex</span>
+            <span class="g g-running">G{{ shard + 1 }}</span>
+          </div>
+        {% endfor %}
+      </div>
+      <p class="mutex-verdict mutex-good">Cả 4 goroutine chạy song song — xác suất trùng shard giảm 4 lần</p>
+    </div>
+  </div>
+
+  <div class="mutex-note">
+    <p>
+      Khi pprof cho thấy thời gian chờ trên <code>sync.Mutex</code> chiếm phần lớn, giải
+      pháp thường không phải là khoá tinh vi hơn mà là chia dữ liệu thành nhiều shard,
+      hoặc chuyển sang mô hình một goroutine sở hữu dữ liệu và giao tiếp qua channel.
+    </p>
+    <p>
+      Lưu ý: mutex trong Go không đệ quy. Gọi <code>Lock()</code> hai lần trong cùng một
+      goroutine sẽ deadlock ngay lập tức.
+    </p>
+  </div>
+</div>

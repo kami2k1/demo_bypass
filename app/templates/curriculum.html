@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}Lộ trình học Go — {{ site_name }}{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Lộ trình', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Lộ trình {{ curriculum.lesson_count }} bài</h1>
+  <p class="lead">
+    Thứ tự bài được thiết kế để đọc tuần tự, nhưng mỗi bài cũng đứng độc lập được.
+    Cột bên phải cho biết mức độ và số ví dụ.
+  </p>
+  <div class="level-legend">
+    {% set counts = curriculum.level_counts() %}
+    {% for level in levels %}
+      <span class="badge badge-level badge-{{ level }}">{{ level }} · {{ counts.get(level, 0) }}</span>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="shell section">
+  {% for chapter in curriculum.chapters %}
+    <article class="chapter-block" id="{{ chapter.slug }}">
+      <header class="chapter-block-head">
+        <div>
+          <span class="badge badge-num">Chương {{ loop.index }}</span>
+          <h2><a href="{{ url_for('learn.chapter_detail', slug=chapter.slug) }}">{{ chapter.title }}</a></h2>
+          <p>{{ chapter.summary | inline_code }}</p>
+        </div>
+        <span class="meta">{{ chapter.lessons | length }} bài</span>
+      </header>
+
+      <ol class="lesson-rows">
+        {% for lesson in chapter.lessons %}
+          <li>
+            <a class="lesson-row" href="{{ url_for('learn.lesson_detail', slug=lesson.slug) }}">
+              <span class="lesson-row-num">{{ '%03d' % lesson.number }}</span>
+              <span class="lesson-row-body">
+                <strong>{{ lesson.title }}</strong>
+                <small>{{ lesson.summary | inline_code }}</small>
+              </span>
+              <span class="lesson-row-meta">
+                <span class="badge badge-level badge-{{ lesson.level }}">{{ lesson.level }}</span>
+                <span class="meta">{{ lesson.reading_minutes }}′ · {{ lesson.samples | length }} ví dụ</span>
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ol>
+    </article>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}Tại sao Go được gọi là nhanh — {{ site_name }}{% endblock %}
+{% block description %}Phân tích ba chiều tốc độ của Go: biên dịch, thực thi và tốc độ bảo trì.{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Tại sao Go', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Tại sao Go được gọi là “nhanh”</h1>
+  <p class="lead">
+    Câu “ngôn ngữ nhanh nhất thế giới” chỉ có ý nghĩa khi nói rõ đang đo cái gì.
+    Trang này tách ra ba chiều tốc độ và nói thẳng chiều nào Go dẫn đầu, chiều nào không.
+  </p>
+</section>
+
+<section class="shell section">
+  <div class="grid grid-3">
+    <article class="card pillar">
+      <span class="pillar-num">01</span>
+      <h3>Tốc độ biên dịch</h3>
+      <p>
+        Không header file, không template instantiation, cấm import vòng nên đồ thị phụ
+        thuộc là DAG và biên dịch được song song. Build lại một service cỡ vừa thường
+        dưới một giây.
+      </p>
+      <p class="verdict verdict-win">Go dẫn đầu rõ rệt</p>
+    </article>
+
+    <article class="card pillar">
+      <span class="pillar-num">02</span>
+      <h3>Tốc độ thực thi</h3>
+      <p>
+        Biên dịch ra mã máy gốc, không máy ảo, khởi động trong vài chục mili giây. GC
+        đồng thời với pause dưới một mili giây. Với code mạng và xử lý dữ liệu, Go
+        thường đạt 80–95% hiệu năng của C.
+      </p>
+      <p class="verdict verdict-mid">Rất nhanh, nhưng C/C++/Rust vẫn nhanh hơn ở tính toán thuần</p>
+    </article>
+
+    <article class="card pillar">
+      <span class="pillar-num">03</span>
+      <h3>Tốc độ bảo trì</h3>
+      <p>
+        Một cách format duy nhất, một từ khoá vòng lặp, đặc tả ngôn ngữ đọc hết trong một
+        buổi chiều. Người mới vào dự án đọc hiểu code nhanh, và code sáu tháng trước vẫn
+        dễ đọc.
+      </p>
+      <p class="verdict verdict-win">Go dẫn đầu rõ rệt</p>
+    </article>
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head">
+    <h2>Thời gian biên dịch lại một service cỡ vừa</h2>
+    <p class="section-sub">
+      Giá trị minh hoạ theo bậc độ lớn thường gặp trong thực tế, dùng để so sánh tương đối
+      chứ không phải kết quả benchmark chuẩn hoá.
+    </p>
+  </header>
+
+  <div class="bar-chart">
+    {% set rows = [('Go', 1.2, 4), ('Java (Gradle)', 12, 40), ('Rust', 28, 93), ('C++ (CMake)', 30, 100)] %}
+    {% for name, seconds, width in rows %}
+      <div class="bar-row">
+        <span class="bar-label">{{ name }}</span>
+        <span class="bar-track"><span class="bar-fill" style="width: {{ width }}%"></span></span>
+        <span class="bar-value">{{ seconds }}s</span>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head"><h2>Điều Go cố tình không có</h2></header>
+  <div class="grid grid-2">
+    <article class="card">
+      <h3>Không kế thừa lớp</h3>
+      <p>Chỉ có embedding và interface ngầm định. Không có cây kế thừa năm tầng để lần theo.</p>
+    </article>
+    <article class="card">
+      <h3>Không exception</h3>
+      <p>Lỗi là giá trị được trả về. Không có luồng điều khiển ẩn nhảy ra khỏi hàm.</p>
+    </article>
+    <article class="card">
+      <h3>Không nạp chồng toán tử</h3>
+      <p><code>a + b</code> luôn là phép cộng, không phải một phương thức bị ghi đè ở đâu đó.</p>
+    </article>
+    <article class="card">
+      <h3>Không tuỳ chọn format</h3>
+      <p>gofmt không có cấu hình, nên không có tranh luận về style trong code review.</p>
+    </article>
+  </div>
+</section>
+
+<section class="shell section">
+  <div class="card callout-card">
+    <h2>Khi nào Go không phải lựa chọn đúng</h2>
+    <ul class="takeaways">
+      <li>Cần kiểm soát bộ nhớ tuyệt đối và không chấp nhận GC: hệ thống thời gian thực cứng, firmware.</li>
+      <li>Tính toán khoa học nặng với thư viện số học trưởng thành: Python/C++/Fortran có hệ sinh thái lớn hơn.</li>
+      <li>Giao diện người dùng desktop hay mobile bản địa: không phải sân của Go.</li>
+      <li>Cần hệ thống kiểu rất biểu cảm để mã hoá bất biến phức tạp: Rust, Scala hay Haskell phù hợp hơn.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="shell section cta">
+  <h2>Bắt đầu đọc</h2>
+  <p>{{ curriculum.lesson_count }} bài học, sắp xếp từ cơ bản tới vận hành production.</p>
+  <a class="btn btn-primary" href="{{ url_for('learn.curriculum') }}">Xem lộ trình</a>
+</section>
+{% endblock %}

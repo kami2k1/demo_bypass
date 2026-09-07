@@ -1,0 +1,56 @@
+{% macro lesson_card(lesson, show_chapter=True) %}
+<article class="card lesson-card">
+  <header>
+    <span class="badge badge-num">#{{ '%03d' % lesson.number }}</span>
+    <span class="badge badge-level badge-{{ lesson.level }}">{{ lesson.level }}</span>
+  </header>
+  <h3><a href="{{ url_for('learn.lesson_detail', slug=lesson.slug) }}">{{ lesson.title }}</a></h3>
+  <p>{{ lesson.summary | inline_code }}</p>
+  <footer>
+    {% if show_chapter %}
+      <a class="chapter-link" href="{{ url_for('learn.chapter_detail', slug=lesson.chapter_slug) }}">{{ lesson.chapter_title }}</a>
+    {% endif %}
+    <span class="meta">{{ lesson.reading_minutes }} phút · {{ lesson.samples | length }} ví dụ</span>
+  </footer>
+</article>
+{% endmacro %}
+
+{% macro tag_list(tags) %}
+<ul class="tag-list">
+  {% for tag in tags %}
+    <li><a href="{{ url_for('learn.tag_detail', tag=tag) }}">#{{ tag }}</a></li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
+{% macro code_block(sample) %}
+<figure class="code-figure">
+  <figcaption>
+    <span class="code-title">{{ sample.title }}</span>
+    <span class="code-lang">{{ sample.language }}</span>
+    <button type="button" class="code-copy" data-copy>Copy</button>
+  </figcaption>
+  <pre class="code" data-lang="{{ sample.language }}"><code>{{ sample.code }}</code></pre>
+  {% if sample.output %}
+    <div class="code-output">
+      <span class="code-output-label">Kết quả</span>
+      <pre>{{ sample.output }}</pre>
+    </div>
+  {% endif %}
+  {% if sample.explanation %}
+    <p class="code-note">{{ sample.explanation | inline_code }}</p>
+  {% endif %}
+</figure>
+{% endmacro %}
+
+{% macro breadcrumb(items) %}
+<div class="shell">
+  <nav class="breadcrumb" aria-label="Đường dẫn">
+    <a href="{{ url_for('site.home') }}">Trang chủ</a>
+    {% for label, href in items %}
+      <span aria-hidden="true">/</span>
+      {% if href %}<a href="{{ href }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif %}
+    {% endfor %}
+  </nav>
+</div>
+{% endmacro %}

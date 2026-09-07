@@ -1,0 +1,34 @@
+<div class="demo demo-build">
+  {% set rows = [
+    ('Go', 'build nóng', 0.3, 1),
+    ('Go', 'build lạnh', 4.8, 16),
+    ('Java + Gradle', 'incremental', 12, 40),
+    ('Rust', 'incremental', 28, 93),
+    ('C++ + CMake', 'incremental', 30, 100),
+  ] %}
+  <div class="build-chart">
+    {% for lang, kind, seconds, width in rows %}
+      <div class="build-row {{ 'is-go' if lang == 'Go' else '' }}">
+        <span class="build-label">{{ lang }}<small>{{ kind }}</small></span>
+        <span class="build-track">
+          <span class="build-fill" style="width: {{ width }}%"></span>
+        </span>
+        <span class="build-value">{{ seconds }}s</span>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="build-note">
+    <p>
+      Số liệu minh hoạ theo bậc độ lớn thường gặp khi biên dịch lại một service khoảng
+      50 nghìn dòng sau khi sửa một file. Điều đáng chú ý không phải con số tuyệt đối mà
+      là ngưỡng tâm lý: dưới một giây thì bạn giữ được mạch suy nghĩ, còn ba mươi giây
+      thì bạn mở tab khác.
+    </p>
+    <p class="build-reason">
+      Nguyên nhân: Go không có header file để phân tích lại, không có template
+      instantiation, và cấm import vòng nên đồ thị phụ thuộc là DAG cho phép biên dịch
+      song song cùng cache theo từng package.
+    </p>
+  </div>
+</div>

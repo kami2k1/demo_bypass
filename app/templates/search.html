@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}{% if query %}Tìm “{{ query }}”{% else %}Tìm kiếm{% endif %} — {{ site_name }}{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Tìm kiếm', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Tìm kiếm</h1>
+  <form class="search-big" action="{{ url_for('site.search_page') }}" method="get" role="search">
+    <input type="search" name="q" value="{{ query }}" autofocus
+           placeholder="goroutine, defer, escape analysis…" aria-label="Từ khoá">
+    <button type="submit" class="btn btn-primary">Tìm</button>
+  </form>
+  {% if query %}
+    <p class="meta">{{ hits | length }} kết quả cho “{{ query }}”</p>
+  {% else %}
+    <p class="lead">Tìm theo tiêu đề, thẻ hoặc nội dung bài học.</p>
+  {% endif %}
+</section>
+
+<section class="shell section">
+  {% if query and not hits %}
+    <div class="empty">
+      <h2>Không có kết quả</h2>
+      <p>Thử từ khoá ngắn hơn, hoặc xem <a href="{{ url_for('learn.tag_index') }}">danh sách thẻ</a>.</p>
+    </div>
+  {% endif %}
+
+  <ol class="hit-list">
+    {% for hit in hits %}
+      <li class="hit">
+        <div class="hit-head">
+          <a href="{{ url_for('learn.lesson_detail', slug=hit.lesson.slug) }}">
+            <span class="hit-num">{{ '%03d' % hit.lesson.number }}</span>{{ hit.lesson.title }}
+          </a>
+          <span class="meta">{{ hit.lesson.chapter_title }} · điểm {{ hit.score }}</span>
+        </div>
+        <p>{{ hit.snippet | inline_code }}</p>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}
