@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Không tìm thấy trang — {{ site_name }}{% endblock %}
+
+{% block content %}
+<section class="shell error-page">
+  <p class="error-code">404</p>
+  <h1>Không tìm thấy trang này</h1>
+  <p class="lead">Đường dẫn có thể đã đổi. Thử tìm kiếm hoặc quay về lộ trình.</p>
+  <form class="search-big" action="{{ url_for('site.search_page') }}" method="get" role="search">
+    <input type="search" name="q" placeholder="Nhập từ khoá…" aria-label="Từ khoá">
+    <button type="submit" class="btn btn-primary">Tìm</button>
+  </form>
+  <p><a class="btn btn-ghost" href="{{ url_for('learn.curriculum') }}">Về lộ trình</a></p>
+</section>
+{% endblock %}

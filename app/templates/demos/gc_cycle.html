@@ -1,0 +1,35 @@
+<div class="demo demo-gc">
+  {% set phases = [
+    ('Mark setup', 'STW', '~10–50 µs', 'Bật write barrier, chuẩn bị root set.'),
+    ('Concurrent mark', 'song song', 'phần lớn thời gian', 'Đánh dấu đối tượng sống, dùng ~25% CPU, chương trình vẫn chạy.'),
+    ('Mark termination', 'STW', '~50–500 µs', 'Kết thúc mark, tắt write barrier.'),
+    ('Sweep', 'song song', 'trải theo cấp phát', 'Giải phóng dần khi có cấp phát mới.'),
+  ] %}
+  <ol class="gc-timeline">
+    {% for name, kind, cost, desc in phases %}
+      <li class="gc-phase gc-{{ 'stw' if kind == 'STW' else 'concurrent' }}">
+        <span class="gc-marker">{{ loop.index }}</span>
+        <div>
+          <h4>{{ name }} <em>{{ kind }}</em></h4>
+          <p>{{ desc }}</p>
+          <span class="gc-cost">{{ cost }}</span>
+        </div>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <div class="gc-tricolour">
+    <h4>Đánh dấu ba màu</h4>
+    <div class="tricolour-row">
+      <span class="tri tri-white">trắng<small>chưa thăm</small></span>
+      <span class="tri-arrow" aria-hidden="true">→</span>
+      <span class="tri tri-grey">xám<small>đã thăm, chưa xét con</small></span>
+      <span class="tri-arrow" aria-hidden="true">→</span>
+      <span class="tri tri-black">đen<small>đã xét xong</small></span>
+    </div>
+    <p>
+      Kết thúc pha mark, mọi thứ còn trắng là rác. Write barrier đảm bảo đối tượng được
+      tham chiếu <em>trong lúc</em> mark không bị bỏ sót.
+    </p>
+  </div>
+</div>

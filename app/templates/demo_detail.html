@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}{{ demo.title }} — {{ site_name }}{% endblock %}
+{% block description %}{{ demo.summary }}{% endblock %}
+
+{% block breadcrumb %}
+{{ breadcrumb([('Demo', url_for('site.demo_index')), (demo.title, None)]) }}
+{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <span class="badge badge-num">{{ demo.concept }}</span>
+  <h1>{{ demo.title }}</h1>
+  <p class="lead">{{ demo.summary }}</p>
+</section>
+
+<section class="shell section">
+  <div class="demo-stage">
+    {% include demo.template %}
+  </div>
+</section>
+
+{% if lesson %}
+<section class="shell section">
+  <div class="card">
+    <h2>Đọc thêm</h2>
+    <p>
+      Demo này minh hoạ nội dung của bài
+      <a href="{{ url_for('learn.lesson_detail', slug=lesson.slug) }}">
+        {{ '%03d' % lesson.number }} · {{ lesson.title }}</a>.
+    </p>
+    <p class="meta">{{ lesson.summary | inline_code }}</p>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

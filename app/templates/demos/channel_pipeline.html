@@ -1,0 +1,37 @@
+<div class="demo demo-pipeline">
+  <div class="pipe-row">
+    {% set stages = [
+      ('generate', 'gửi 1..N vào channel', 'out <- n'),
+      ('square', 'đọc, bình phương, gửi tiếp', 'out <- n * n'),
+      ('printer', 'đọc và in kết quả', 'for v := range in'),
+    ] %}
+    {% for name, desc, snippet in stages %}
+      <div class="pipe-stage">
+        <span class="pipe-stage-name">{{ name }}</span>
+        <p>{{ desc }}</p>
+        <code>{{ snippet }}</code>
+      </div>
+      {% if not loop.last %}
+        <div class="pipe-channel" aria-label="channel có buffer">
+          <small>chan int</small>
+          <span class="pipe-buffer">
+            {% for slot in range(3) %}<span class="slot"></span>{% endfor %}
+          </span>
+          <span class="pipe-track">
+            {% for dot in range(3) %}
+              <span class="pipe-dot" style="animation-delay: {{ loop.index0 * 0.9 }}s"></span>
+            {% endfor %}
+          </span>
+          <small>buffer 3</small>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="pipe-note">
+    <p>
+      Mỗi stage là một goroutine riêng. Khi channel đầy, stage phía trước tự chậm lại —
+      đó là áp lực ngược (backpressure) có sẵn, không cần cơ chế điều tiết nào thêm.
+    </p>
+  </div>
+</div>

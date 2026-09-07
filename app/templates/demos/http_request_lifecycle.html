@@ -1,0 +1,32 @@
+<div class="demo demo-lifecycle">
+  {% set steps = [
+    ('Accept', 'srv.Serve()', 'Vòng lặp accept nhận kết nối TCP mới.'),
+    ('Goroutine mới', 'go c.serve(ctx)', 'Mỗi kết nối được một goroutine riêng, ~2 KB stack.'),
+    ('Đọc request', 'http.ReadRequest', 'Phân tích dòng request và header, giới hạn bởi ReadHeaderTimeout.'),
+    ('Middleware', 'Recover → Log → Auth', 'Bọc từ ngoài vào trong; ngoài cùng nhận request trước.'),
+    ('Routing', 'mux.ServeHTTP', 'Chọn pattern cụ thể nhất, gán PathValue.'),
+    ('Handler', 'h.ServeHTTP(w, r)', 'Logic nghiệp vụ; ctx bị huỷ nếu client ngắt kết nối.'),
+    ('Ghi response', 'w.WriteHeader / w.Write', 'Status ghi một lần; header phải đặt trước khi ghi body.'),
+    ('Keep-alive', 'IdleTimeout', 'Kết nối được giữ để tái sử dụng, hoặc đóng khi hết hạn.'),
+  ] %}
+  <ol class="lifecycle">
+    {% for name, call, desc in steps %}
+      <li>
+        <span class="lifecycle-step">{{ '%02d' % loop.index }}</span>
+        <div class="lifecycle-body">
+          <h4>{{ name }}</h4>
+          <code>{{ call }}</code>
+          <p>{{ desc }}</p>
+        </div>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <div class="lifecycle-note">
+    <p>
+      Toàn bộ chuỗi này chạy trong một goroutine duy nhất, nên handler của bạn được viết
+      theo lối tuần tự. Hàng nghìn chuỗi như vậy chạy song song mà không cần event loop
+      hay callback.
+    </p>
+  </div>
+</div>

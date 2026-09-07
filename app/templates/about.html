@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}Giới thiệu — {{ site_name }}{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Giới thiệu', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Giới thiệu</h1>
+  <p class="lead">
+    {{ site_name }} là một site tĩnh về nội dung nhưng động về cách sinh trang: toàn bộ
+    {{ curriculum.lesson_count }} bài học được mô tả bằng dữ liệu Python và render qua
+    một handler Flask duy nhất.
+  </p>
+</section>
+
+<section class="shell section">
+  <div class="grid grid-2">
+    <article class="card">
+      <h2>Nội dung</h2>
+      <ul class="takeaways">
+        <li>{{ curriculum.chapter_count }} chương, {{ curriculum.lesson_count }} bài học</li>
+        <li>{{ curriculum.sample_count }} ví dụ mã, khoảng {{ curriculum.code_line_count }} dòng code</li>
+        <li>{{ curriculum.demos | length }} demo tương tác bằng HTML/CSS</li>
+        <li>{{ curriculum.tags | length }} thẻ để tra cứu chéo</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Kiến trúc</h2>
+      <ul class="takeaways">
+        <li>Flask application factory, hai blueprint: <code>site</code> và <code>learn</code></li>
+        <li>Nội dung là dataclass bất biến, kiểm tra tính toàn vẹn lúc nạp</li>
+        <li>Tìm kiếm bằng chỉ mục đảo trong bộ nhớ, không phụ thuộc ngoài</li>
+        <li>CSS thuần, không framework, không bước build cho frontend</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head"><h2>Vì sao không dùng 100 file HTML</h2></header>
+  <div class="card">
+    <p>
+      Một trăm file HTML tĩnh nghĩa là một trăm bản sao của cùng một layout. Sửa thanh
+      điều hướng sẽ thành một trăm lần sửa, và chắc chắn sẽ có file bị bỏ sót.
+    </p>
+    <p>
+      Ở đây mỗi bài học là một giá trị dữ liệu; template chỉ có một bản. Thêm bài mới là
+      thêm một mục vào chương tương ứng, còn điều hướng trước/sau, thẻ, tìm kiếm và
+      sitemap tự cập nhật theo. Bộ test kiểm tra mọi URL trả về 200 và mọi bài có đủ ví
+      dụ, nên nội dung thiếu sót không thể lọt qua CI.
+    </p>
+  </div>
+</section>
+
+<section class="shell section">
+  <header class="section-head"><h2>Chạy tại máy</h2></header>
+  <figure class="code-figure">
+    <figcaption><span class="code-title">Cài đặt và chạy</span><span class="code-lang">bash</span></figcaption>
+    <pre class="code" data-lang="bash"><code>python -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+flask --app wsgi run --debug
+pytest -q</code></pre>
+  </figure>
+</section>
+{% endblock %}

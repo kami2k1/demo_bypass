@@ -1,0 +1,46 @@
+<div class="demo demo-iface">
+  <div class="iface-value">
+    <span class="iface-title">interface value (2 từ máy)</span>
+    <div class="iface-words">
+      <div class="iface-word">
+        <strong>tab</strong>
+        <small>*itab</small>
+      </div>
+      <div class="iface-word">
+        <strong>data</strong>
+        <small>unsafe.Pointer</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="iface-targets">
+    <div class="iface-box iface-itab">
+      <h4>itab</h4>
+      <ul>
+        <li><code>inter</code> — kiểu interface (io.Writer)</li>
+        <li><code>_type</code> — kiểu động (*os.File)</li>
+        <li><code>fun[0]</code> — địa chỉ <code>(*os.File).Write</code></li>
+      </ul>
+    </div>
+    <div class="iface-box iface-data">
+      <h4>dữ liệu</h4>
+      <ul>
+        <li>giá trị <code>*os.File</code> thực tế</li>
+        <li>nằm trên heap nếu escape</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="iface-call">
+    <h4>Một lời gọi <code>w.Write(p)</code> đi qua ba bước</h4>
+    <ol>
+      <li>Đọc con trỏ itab từ interface value</li>
+      <li>Tra địa chỉ hàm trong bảng <code>fun</code></li>
+      <li>Gọi hàm đó với <code>data</code> làm receiver</li>
+    </ol>
+    <p class="iface-nil">
+      Đây cũng là lý do một interface chứa con trỏ nil vẫn khác nil: từ <strong>tab</strong>
+      đã được điền, chỉ <strong>data</strong> là nil.
+    </p>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<div class="demo demo-scheduler">
+  <div class="sched-grid">
+    {% for p in [0, 1] %}
+      <div class="sched-p">
+        <header>P{{ p }} <small>logical processor</small></header>
+        <div class="sched-m">M{{ p }} <small>OS thread</small></div>
+        <div class="sched-running">
+          <span class="g g-running">G{{ p * 10 + 1 }}</span>
+          <em>đang chạy</em>
+        </div>
+        <div class="sched-queue">
+          <span class="queue-label">run queue cục bộ</span>
+          <div class="queue-items">
+            {% for g in range(3) %}
+              <span class="g g-queued" style="animation-delay: {{ (p * 3 + g) * 0.4 }}s">
+                G{{ p * 10 + g + 2 }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="sched-global">
+    <span class="queue-label">global run queue</span>
+    <div class="queue-items">
+      {% for g in range(4) %}
+        <span class="g g-global" style="animation-delay: {{ g * 0.5 }}s">G{{ 90 + g }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="sched-steal">
+    <span class="steal-arrow" aria-hidden="true"></span>
+    <p>Khi run queue của một P rỗng, nó trộm một nửa công việc từ P khác (work stealing).</p>
+  </div>
+
+  <dl class="demo-legend">
+    <dt><span class="dot dot-running"></span>G đang chạy</dt><dd>chiếm P và M</dd>
+    <dt><span class="dot dot-queued"></span>G xếp hàng</dt><dd>chờ trong queue cục bộ</dd>
+    <dt><span class="dot dot-global"></span>G trong global queue</dt><dd>P nào rảnh cũng lấy được</dd>
+  </dl>
+</div>

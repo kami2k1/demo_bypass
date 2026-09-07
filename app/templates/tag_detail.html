@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import lesson_card, breadcrumb %}
+
+{% block title %}#{{ tag }} — {{ site_name }}{% endblock %}
+{% block description %}Các bài học về {{ tag }}.{% endblock %}
+
+{% block breadcrumb %}
+{{ breadcrumb([('Thẻ', url_for('learn.tag_index')), ('#' ~ tag, None)]) }}
+{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>#{{ tag }}</h1>
+  <p class="lead">{{ lessons | length }} bài học mang thẻ này.</p>
+</section>
+
+<section class="shell section">
+  <div class="grid grid-2">
+    {% for lesson in lessons %}
+      {{ lesson_card(lesson) }}
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

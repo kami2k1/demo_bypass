@@ -1,0 +1,41 @@
+<div class="demo demo-slice">
+  {% set steps = [
+    (1, 1, 'cấp phát mảng đầu tiên'),
+    (2, 2, 'cap đầy, cấp mảng mới và copy'),
+    (3, 4, 'cap đầy, cấp mảng mới và copy'),
+    (4, 4, none),
+    (5, 8, 'cap đầy, cấp mảng mới và copy'),
+    (6, 8, none),
+  ] %}
+  <table class="slice-table">
+    <thead>
+      <tr><th>append thứ</th><th>len</th><th>cap</th><th>mảng nền</th><th>cấp phát lại?</th></tr>
+    </thead>
+    <tbody>
+      {% for length, cap, reason in steps %}
+        <tr class="{{ 'is-realloc' if reason else '' }}">
+          <td>{{ loop.index }}</td>
+          <td>{{ length }}</td>
+          <td>{{ cap }}</td>
+          <td>
+            <span class="slice-cells">
+              {% for cell in range(cap) %}
+                <span class="cell {{ 'cell-used' if cell < length else 'cell-free' }}">
+                  {{ cell if cell < length else '' }}</span>
+              {% endfor %}
+            </span>
+          </td>
+          <td>{{ ('có — ' ~ reason) if reason else 'không — ghi vào ô trống có sẵn' }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="slice-note">
+    <p>
+      Ô màu đậm là phần tử đang dùng (len), ô nhạt là capacity còn trống. Mỗi hàng được
+      đánh dấu <strong>cấp phát lại</strong> là một lần runtime cấp mảng mới và copy toàn
+      bộ dữ liệu — chính là điều <code>make([]T, 0, n)</code> giúp bạn tránh.
+    </p>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}Demo tương tác — {{ site_name }}{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Demo', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Demo tương tác</h1>
+  <p class="lead">
+    {{ demos | length }} demo dựng bằng HTML và CSS thuần, minh hoạ các cơ chế bên trong
+    runtime Go mà chỉ đọc chữ thì khó hình dung.
+  </p>
+</section>
+
+<section class="shell section">
+  <div class="grid grid-2">
+    {% for demo in demos %}
+      <article class="card demo-card">
+        <span class="badge badge-level badge-intermediate">{{ demo.concept }}</span>
+        <h3><a href="{{ url_for('site.demo_detail', slug=demo.slug) }}">{{ demo.title }}</a></h3>
+        <p>{{ demo.summary }}</p>
+        <footer>
+          <a class="chapter-link" href="{{ url_for('learn.lesson_detail', slug=demo.related_lesson) }}">
+            Bài liên quan: {{ curriculum.lesson(demo.related_lesson).title }}
+          </a>
+        </footer>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

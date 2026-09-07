@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}Tất cả thẻ — {{ site_name }}{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Thẻ', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Thẻ</h1>
+  <p class="lead">{{ tag_counts | length }} thẻ giúp tra cứu chéo giữa các chương.</p>
+</section>
+
+<section class="shell section">
+  <div class="tag-cloud">
+    {% for tag, count in tag_counts %}
+      <a href="{{ url_for('learn.tag_detail', tag=tag) }}" class="tag-chip">
+        <span>#{{ tag }}</span><em>{{ count }}</em>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

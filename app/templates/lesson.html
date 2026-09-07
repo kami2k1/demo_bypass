@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import code_block, tag_list, breadcrumb %}
+
+{% block title %}{{ lesson.title }} — {{ site_name }}{% endblock %}
+{% block description %}{{ lesson.summary }}{% endblock %}
+
+{% block breadcrumb %}
+{{ breadcrumb([
+  ('Lộ trình', url_for('learn.curriculum')),
+  (chapter.title, url_for('learn.chapter_detail', slug=chapter.slug)),
+  (lesson.title, None),
+]) }}
+{% endblock %}
+
+{% block content %}
+<div class="shell lesson-layout">
+  <article class="lesson">
+    <header class="lesson-head">
+      <div class="lesson-head-badges">
+        <span class="badge badge-num">Bài {{ '%03d' % lesson.number }}</span>
+        <span class="badge badge-level badge-{{ lesson.level }}">{{ lesson.level }}</span>
+        <span class="meta">{{ lesson.reading_minutes }} phút đọc</span>
+      </div>
+      <h1>{{ lesson.title }}</h1>
+      <p class="lead">{{ lesson.summary | inline_code }}</p>
+      {{ tag_list(lesson.tags) }}
+    </header>
+
+    {% for section in lesson.sections %}
+      <section class="lesson-section" id="phan-{{ loop.index }}">
+        <h2>{{ section.heading }}</h2>
+        {% for paragraph in section.paragraphs %}
+          <p>{{ paragraph | inline_code }}</p>
+        {% endfor %}
+        {% if section.note %}
+          <aside class="callout">
+            <span class="callout-label">Đáng chú ý</span>
+            <p>{{ section.note | inline_code }}</p>
+          </aside>
+        {% endif %}
+      </section>
+    {% endfor %}
+
+    <section class="lesson-section" id="vi-du">
+      <h2>Ví dụ</h2>
+      {% for sample in lesson.samples %}
+        {{ code_block(sample) }}
+      {% endfor %}
+    </section>
+
+    <section class="lesson-section" id="ghi-nho">
+      <h2>Ghi nhớ</h2>
+      <ul class="takeaways">
+        {% for item in lesson.takeaways %}
+          <li>{{ item | inline_code }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% if lesson.exercises %}
+      <section class="lesson-section" id="bai-tap">
+        <h2>Bài tập</h2>
+        <ol class="exercises">
+          {% for item in lesson.exercises %}
+            <li>{{ item | inline_code }}</li>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endif %}
+
+    <nav class="pager" aria-label="Bài trước sau">
+      {% if previous %}
+        <a class="pager-prev" href="{{ url_for('learn.lesson_detail', slug=previous.slug) }}">
+          <small>Bài {{ '%03d' % previous.number }}</small><strong>{{ previous.title }}</strong>
+        </a>
+      {% else %}<span></span>{% endif %}
+      {% if following %}
+        <a class="pager-next" href="{{ url_for('learn.lesson_detail', slug=following.slug) }}">
+          <small>Bài {{ '%03d' % following.number }}</small><strong>{{ following.title }}</strong>
+        </a>
+      {% endif %}
+    </nav>
+  </article>
+
+  <aside class="lesson-aside">
+    <div class="aside-box">
+      <h3>Trong bài này</h3>
+      <ul class="toc">
+        {% for section in lesson.sections %}
+          <li><a href="#phan-{{ loop.index }}">{{ section.heading }}</a></li>
+        {% endfor %}
+        <li><a href="#vi-du">Ví dụ</a></li>
+        <li><a href="#ghi-nho">Ghi nhớ</a></li>
+        {% if lesson.exercises %}<li><a href="#bai-tap">Bài tập</a></li>{% endif %}
+      </ul>
+    </div>
+
+    <div class="aside-box">
+      <h3>Cùng chương</h3>
+      <ul class="aside-list">
+        {% for other in chapter.lessons %}
+          <li class="{{ 'is-current' if other.slug == lesson.slug else '' }}">
+            <a href="{{ url_for('learn.lesson_detail', slug=other.slug) }}">
+              {{ '%03d' % other.number }} · {{ other.title }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if related %}
+      <div class="aside-box">
+        <h3>Liên quan</h3>
+        <ul class="aside-list">
+          {% for other in related %}
+            <li><a href="{{ url_for('learn.lesson_detail', slug=other.slug) }}">{{ other.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

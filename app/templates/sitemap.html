@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import breadcrumb %}
+
+{% block title %}Sơ đồ site — {{ site_name }}{% endblock %}
+
+{% block breadcrumb %}{{ breadcrumb([('Sơ đồ site', None)]) }}{% endblock %}
+
+{% block content %}
+<section class="shell page-head">
+  <h1>Sơ đồ site</h1>
+  <p class="lead">
+    Toàn bộ đường dẫn của site trên một trang. Bản dành cho máy đọc có tại
+    <a href="{{ url_for('site.sitemap_xml') }}">sitemap.xml</a>.
+  </p>
+</section>
+
+<section class="shell section sitemap">
+  <h2>Trang chung</h2>
+  <ul class="sitemap-list">
+    <li><a href="{{ url_for('site.home') }}">Trang chủ</a></li>
+    <li><a href="{{ url_for('site.why_go') }}">Tại sao Go</a></li>
+    <li><a href="{{ url_for('site.about') }}">Giới thiệu</a></li>
+    <li><a href="{{ url_for('site.search_page') }}">Tìm kiếm</a></li>
+    <li><a href="{{ url_for('learn.curriculum') }}">Lộ trình</a></li>
+    <li><a href="{{ url_for('learn.tag_index') }}">Thẻ</a></li>
+    <li><a href="{{ url_for('site.demo_index') }}">Demo</a></li>
+  </ul>
+
+  <h2>Demo ({{ curriculum.demos | length }})</h2>
+  <ul class="sitemap-list">
+    {% for demo in curriculum.demos %}
+      <li><a href="{{ url_for('site.demo_detail', slug=demo.slug) }}">{{ demo.title }}</a></li>
+    {% endfor %}
+  </ul>
+
+  {% for chapter in curriculum.chapters %}
+    <h2>
+      Chương {{ loop.index }} —
+      <a href="{{ url_for('learn.chapter_detail', slug=chapter.slug) }}">{{ chapter.title }}</a>
+    </h2>
+    <ul class="sitemap-list">
+      {% for lesson in chapter.lessons %}
+        <li>
+          <a href="{{ url_for('learn.lesson_detail', slug=lesson.slug) }}">
+            {{ '%03d' % lesson.number }} · {{ lesson.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+
+  <h2>Thẻ ({{ curriculum.tags | length }})</h2>
+  <ul class="sitemap-list">
+    {% for tag in curriculum.tags %}
+      <li><a href="{{ url_for('learn.tag_detail', tag=tag) }}">#{{ tag }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
